@@ -1,5 +1,5 @@
-use rand::prelude::*;
 use bevy::prelude::*;
+use rand::random_bool;
 
 #[derive(Component, Copy, Clone, Debug)]
 pub struct Ball {
@@ -14,8 +14,8 @@ pub struct Ball {
 
 impl Ball {
 	pub fn new(width: f32, height: f32, color: Color) -> Self {
-		let velocity_x = if rand::rng().random_bool(0.5) { -350.0 } else { 350.0 };
-		let velocity_y = if rand::rng().random_bool(0.5) { -350.0 } else { 350.0 };
+		let velocity_x = if random_bool(0.5) { -350.0 } else { 350.0 };
+		let velocity_y = if random_bool(0.5) { -350.0 } else { 350.0 };
 
 		Self {
 			velocity: Vec3::new(velocity_x, velocity_y, 0.0),
@@ -54,26 +54,31 @@ impl Ball {
 	}
 }
 
-pub fn check_collisions(mut query: Query<(&mut Transform, &mut Ball)>) {
+pub fn check_ball_collisions(mut query: Query<(&mut Transform, &mut Ball)>) {
 	let mut balls = query.iter_mut().collect::<Vec<_>>();
 	let len = balls.len();
 
-	for i in 0..len {
-		for j in (i + 1)..len {
-			let distance = balls[i].0.translation.distance(balls[j].0.translation);
-			let collision_distance = balls[i].1.radius + balls[j].1.radius;
+	for a in 0..len {
+		for b in (a + 1)..len {
+			let distance = balls[a].0.translation.distance(balls[b].0.translation);
+			let collision_distance = balls[a].1.radius + balls[b].1.radius;
 
 			if distance < collision_distance {
-				let idxs = [i, j];
+				// Calcular a resposta de colisão
+				let normal = (balls[b].0.translation - balls[a].0.translation).normalize();
+				let relative_velocity = balls[b].1.velocity - balls[a].1.velocity;
+				let velocity_along_normal = relative_velocity.dot(normal);
 
-				for idx in idxs.iter() {
-					let space = collision_distance - distance;
-
-					balls[*idx].1.velocity.x *= -1.;
-
-					balls[*idx].0.translation.x += if balls[*idx].1.velocity.x >= 0. { space } else { -space };
-					balls[*idx].0.translation.y += if balls[*idx].1.velocity.y >= 0. { space } else { -space };
+				if velocity_along_normal > 0.0 {
+					continue;
 				}
+
+				let restitution = 1.0; // Coeficiente de restituição (1.0 para colisão elástica)
+				let impulse_scalar = -(0.01 + restitution) * velocity_along_normal;
+				let impulse = impulse_scalar * normal;
+
+				balls[a].1.velocity -= impulse;
+				balls[b].1.velocity += impulse;
 			}
 		}
 	}

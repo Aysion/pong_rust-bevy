@@ -6,7 +6,7 @@ mod ball;
 
 use draw::to_coord;
 use game::Game;
-use ball::{check_collisions, Ball};
+use ball::{check_ball_collisions, Ball};
 
 const BACKGROUND_COLOR: Color = Color::srgb(0.5, 0.5, 0.5);
 const WIDTH: f32 = 61.;
@@ -55,7 +55,7 @@ fn main() {
 			}))
 			.add_systems(Startup, setup)
 			// .add_systems(Update, |mut game: ResMut<Game>, time: Res<Time>| game.update(time.delta_secs()))
-			.add_systems(Update, check_collisions)
+			.add_systems(Update, check_ball_collisions)
 			.add_systems(Update, update_balls)
 			.run();
 }
