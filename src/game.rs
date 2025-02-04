@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::draw::{draw_rectangle, draw_dashed_line};
 use crate::ball::Ball;
 
-const BORDER_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
+const BORDER_COLOR: Color = Color::srgb(0.9, 0.9, 0.9);
 
 #[derive(Resource)]
 pub struct Game {

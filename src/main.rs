@@ -8,38 +8,39 @@ use draw::to_coord;
 use game::Game;
 use ball::{check_ball_collisions, Ball};
 
-const BACKGROUND_COLOR: Color = Color::srgb(0.5, 0.5, 0.5);
+const BACKGROUND_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
 const WIDTH: f32 = 61.;
 const HEIGHT: f32 = 31.;
 
 fn main() {
 	let mut game = Game::new(WIDTH, HEIGHT);
 
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0., 0., 0.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1., 0., 0.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0., 1., 0.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0., 0., 1.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1., 1., 0.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1., 0., 1.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0., 1., 1.)));
-	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1., 1., 1.)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 0.0, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1.0, 0.0, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 1.0, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 0.0, 1.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1.0, 1.0, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1.0, 0.0, 1.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 1.0, 1.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(1.0, 1.0, 1.0)));
 
-	game.ball[0].x = -300.;
-	game.ball[0].y = HEIGHT / 2. * -1.0;
-	game.ball[1].x = -200.;
-	game.ball[1].y = HEIGHT / 3. * -1.0;
-	game.ball[2].x = -100.0;
-	game.ball[2].y = HEIGHT / 4. * -1.0;
-	game.ball[3].x = 0.0;
-	game.ball[3].y = HEIGHT / 5. * -1.0;
-	game.ball[4].x = 100.0;
-	game.ball[4].y = HEIGHT / 6. * 1.0;
-	game.ball[5].x = 200.0;
-	game.ball[5].y = HEIGHT / 7. * 1.0;
-	game.ball[6].x = 300.0;
-	game.ball[6].y = HEIGHT / 8. * 1.0;
-	game.ball[7].x = 400.0;
-	game.ball[7].y = HEIGHT / 9. * 1.0;
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.5, 0.5, 0.5)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.5, 0.0, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 0.5, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 0.0, 0.5)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.5, 0.5, 0.0)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.5, 0.0, 0.5)));
+	game.ball.push(Ball::new(WIDTH, HEIGHT, Color::srgb(0.0, 0.5, 0.5)));
+
+
+	// iniciar o jogo com as bolas formando um circulo no centro da tela
+	let mut angle: f32 = 0.0;
+	let angle_step = 2.0 * std::f32::consts::PI / game.ball.len() as f32;
+	for ball in &mut game.ball {
+		ball.x = angle.cos() * 100.0;
+		ball.y = angle.sin() * 100.0;
+		angle += angle_step;
+	}
 
 	App::new()
 			.insert_resource(ClearColor(BACKGROUND_COLOR))

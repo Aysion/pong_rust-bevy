@@ -14,8 +14,8 @@ pub struct Ball {
 
 impl Ball {
 	pub fn new(width: f32, height: f32, color: Color) -> Self {
-		let velocity_x = if random_bool(0.5) { -350.0 } else { 350.0 };
-		let velocity_y = if random_bool(0.5) { -350.0 } else { 350.0 };
+		let velocity_x = if random_bool(0.5) { -300.0 } else { 300.0 };
+		let velocity_y = if random_bool(0.5) { -300.0 } else { 300.0 };
 
 		Self {
 			velocity: Vec3::new(velocity_x, velocity_y, 0.0),
@@ -73,9 +73,18 @@ pub fn check_ball_collisions(mut query: Query<(&mut Transform, &mut Ball)>) {
 					continue;
 				}
 
-				let restitution = 1.0; // Coeficiente de restituição (1.0 para colisão elástica)
-				let impulse_scalar = -(0.01 + restitution) * velocity_along_normal;
-				let impulse = impulse_scalar * normal;
+				let restitution = 1.005; // Coeficiente de restituição (1.0 para colisão elástica); 0.0 para colisão inelástica (bolas grudam)
+				let impulse_scalar = -restitution * velocity_along_normal;
+				let mut impulse = impulse_scalar * normal;
+
+				if impulse.x.is_nan() || impulse.y.is_nan() {
+					continue;
+				}
+
+				// limitar a velocidade de resposta
+				let max_impulse = 2000.0;
+				if impulse.x.abs() > max_impulse { impulse.x = impulse.x.signum() * max_impulse; }
+				if impulse.y.abs() > max_impulse { impulse.y = impulse.y.signum() * max_impulse; }
 
 				balls[a].1.velocity -= impulse;
 				balls[b].1.velocity += impulse;
