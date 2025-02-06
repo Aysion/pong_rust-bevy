@@ -1,12 +1,4 @@
-
-
 use bevy::prelude::*;
-
-const BLOCK_SIZE: f32 = 25.0;
-
-pub fn to_coord(game_coord: f32) -> f32 {
-	(game_coord as f32) * BLOCK_SIZE
-}
 
 pub fn draw_rectangle(
 	commands: &mut Commands,
@@ -21,7 +13,7 @@ pub fn draw_rectangle(
 	commands.spawn((
 		Mesh2d(meshes.add(Rectangle::default())),
 		MeshMaterial2d(materials.add(color)),
-		Transform::from_translation(Vec3::new(to_coord(x), to_coord(y), 0.)).with_scale(Vec3::new(to_coord(width), to_coord(height), 0.)),
+		Transform::from_translation(Vec3::new(x, y, 0.)).with_scale(Vec3::new(width, height, 0.0)),
 	));
 }
 
@@ -39,6 +31,6 @@ pub fn draw_dashed_line(
 		let direction = (end - start).normalize();
 		let dash_end = start + direction * dash_length;
 		draw_rectangle(commands, meshes, materials, start.x, start.y, dash_length, dash_length, color);
-		start = (dash_end + direction) * gap_length;
+		start = dash_end + direction * gap_length;
 	}
 }

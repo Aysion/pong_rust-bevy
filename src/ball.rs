@@ -22,8 +22,8 @@ impl Ball {
 			x: 0.0,
 			y: 0.0,
 			radius: 12.5,
-			width: (width * 25. / 2.) - 24.5,
-			height: (height * 25. / 2.) - 24.5,
+			width: (width / 2.) - 24.5,
+			height: (height / 2.) - 24.5,
 			color,
 		}
 	}
@@ -51,6 +51,14 @@ impl Ball {
 
 		self.x = transform.translation.x;
 		self.y = transform.translation.y;
+	}
+}
+
+pub fn update_balls(time: Res<Time>, mut query: Query<(&mut Transform, &mut Ball)>) {
+	let delta = time.delta_secs();
+
+	for mut params in &mut query {
+		params.1.update(&mut params.0, delta);
 	}
 }
 
