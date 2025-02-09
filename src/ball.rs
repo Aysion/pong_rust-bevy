@@ -29,10 +29,17 @@ impl Ball {
 	}
 
 	pub fn draw(&mut self, commands: &mut Commands, meshes: &mut ResMut<Assets<Mesh>>, materials: &mut ResMut<Assets<ColorMaterial>>) {
+		// commands.spawn((
+		// 	Mesh2d(meshes.add(Mesh::from(Circle::default()))),
+		// 	MeshMaterial2d(materials.add(ColorMaterial::from(self.color))),
+		// 	Transform::from_translation(Vec3::new(self.x, self.y, 0.)).with_scale(Vec3::splat(25.)),
+		// 	self,
+		// ));
+
 		commands.spawn((
 			Mesh2d(meshes.add(Mesh::from(Circle::default()))),
 			MeshMaterial2d(materials.add(ColorMaterial::from(self.color))),
-			Transform::from_translation(Vec3::new(self.x, self.y, 0.)).with_scale(Vec3::splat(25.)),
+			Transform::from_translation(Vec3::new(0., 0., 0.)).with_scale(Vec3::splat(25.)),
 			self.clone(),
 		));
 	}
@@ -57,8 +64,8 @@ impl Ball {
 pub fn update_balls(time: Res<Time>, mut query: Query<(&mut Transform, &mut Ball)>) {
 	let delta = time.delta_secs();
 
-	for mut params in &mut query {
-		params.1.update(&mut params.0, delta);
+	for (mut transform, mut ball) in &mut query {
+		ball.update(&mut transform, delta);
 	}
 }
 

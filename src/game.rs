@@ -10,14 +10,14 @@ const BORDER_COLOR: Color = Color::srgb(0.9, 0.9, 0.9);
 pub struct Game {
 	width: f32,
 	height: f32,
-	pub ball: Vec<Ball>,
+	pub balls: Vec<Ball>,
 	pub player1: Player,
 	pub player2: Player,
 }
 
 impl Game {
 	pub fn new(width: f32, height: f32) -> Self {
-		let mut balls = Vec::new();
+		let mut balls: Vec<Ball> = Vec::new();
 
 		balls.push(Ball::new(width, height, Color::srgb(0.0, 0.0, 0.0)));
 		balls.push(Ball::new(width, height, Color::srgb(1.0, 0.0, 0.0)));
@@ -48,9 +48,9 @@ impl Game {
 		Self {
 			width,
 			height,
-			ball: balls,
-			player1: Player::new(25., 25. * 5., -(width / 2. - 37.5), 0., Color::srgb(0.0, 0.0, 0.0)),
-			player2: Player::new(25., 25. * 5., width / 2. - 37.5, 0., Color::srgb(0.0, 0.0, 0.0)),
+			balls,
+			player1: Player::new(height, 25., 25. * 5., -(width / 2. - 37.5), 0., Color::srgb(0.0, 0.0, 0.0), true),
+			player2: Player::new(height, 25., 25. * 5., width / 2. - 37.5, 0., Color::srgb(0.0, 0.0, 0.0), true),
 		}
 	}
 
@@ -73,7 +73,7 @@ impl Game {
 		self.player1.draw(commands, meshes, materials);
 		self.player2.draw(commands, meshes, materials);
 
-		for ball in &mut self.ball {
+		for ball in &mut self.balls {
 			ball.draw(commands, meshes, materials);
 		}
 	}

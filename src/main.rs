@@ -6,7 +6,7 @@ mod ball;
 mod player;
 
 use game::Game;
-use player::check_player_collisions;
+use player::{check_player_collisions, Player};
 use ball::{check_ball_collisions, update_balls};
 
 const BACKGROUND_COLOR: Color = Color::srgb(0.3, 0.3, 0.3);
@@ -29,10 +29,14 @@ fn main() {
 				..default()
 			}))
 			.add_systems(Startup, setup)
-			// .add_systems(Update, |mut game: ResMut<Game>, time: Res<Time>| game.update(time.delta_secs()))
 			.add_systems(Update, check_player_collisions)
 			.add_systems(Update, check_ball_collisions)
 			.add_systems(Update, update_balls)
+			.add_systems(Update, |mut player_query: Query<(&mut Player, &mut Transform), With<Player>>| {
+				for (mut player, mut transform) in player_query.iter_mut() {
+					player.update(&mut transform);
+				}
+			})
 			.run();
 }
 
